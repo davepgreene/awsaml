@@ -92,12 +92,30 @@ const config = {
       },
     },
   ],
+  publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      config: {
+        repository: {
+          owner: 'rapid7',
+          name: 'awsaml',
+        },
+        draft: true,
+        prerelease: false,
+      },
+    },
+  ],
 };
 
 // If we're running in Jenkins (or the env indicates we are) attempt to
 // code sign.
 if (process.env.BUILD_NUMBER && process.env.BUILD_NUMBER !== '') {
   config.packagerConfig.osxSign = {};
+  config.packagerConfig.osxNotarize = {
+    tool: 'notarytool', // xcrun notarytool
+    keychain: process.env.KEYCHAIN, // not sure what to set these to in Jenkinsfile
+    keychainProfile: process.env.KEYCHAIN_PROFILE,
+  };
 }
 
 module.exports = config;
