@@ -114,7 +114,7 @@ if (process.env.BUILD_NUMBER && process.env.BUILD_NUMBER !== '') {
   config.packagerConfig.osxNotarize = {
     tool: 'notarytool', // xcrun notarytool
     keychain: process.env.KEYCHAIN, // not sure what to set these to in Jenkinsfile
-    keychainProfile: process.env.MAC_KEYCHAIN_PASSWORD,
+    keychainProfile: process.env.KEYCHAIN_PROFILE,
   };
 }
 
