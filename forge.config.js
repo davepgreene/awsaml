@@ -97,7 +97,7 @@ const config = {
       name: '@electron-forge/publisher-github',
       config: {
         repository: {
-          owner: 'rapid7',
+          owner: 'mmurrell-r7',
           name: 'awsaml',
         },
         draft: true,
@@ -113,7 +113,7 @@ if (process.env.BUILD_NUMBER && process.env.BUILD_NUMBER !== '') {
   config.packagerConfig.osxSign = {};
   config.packagerConfig.osxNotarize = {
     tool: 'notarytool', // xcrun notarytool
-    keychain: process.env.KEYCHAIN, // not sure what to set these to in Jenkinsfile
+    keychain: process.env.KEYCHAIN,
     keychainProfile: process.env.KEYCHAIN_PROFILE,
   };
 }
