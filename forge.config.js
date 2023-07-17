@@ -46,6 +46,8 @@ const config = {
     name: 'Awsaml',
     darwinDarkModeSupport: true,
     icon: 'images/icon',
+    arch: 'universal',
+    // all: true,
   },
   rebuildConfig: {},
   hooks: {
