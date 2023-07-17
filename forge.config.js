@@ -47,7 +47,7 @@ const config = {
     darwinDarkModeSupport: true,
     icon: 'images/icon',
     arch: 'universal',
-    // all: true,
+    osxUniversal: {},
   },
   rebuildConfig: {},
   hooks: {
