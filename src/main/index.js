@@ -55,16 +55,16 @@ app.on('window-all-closed', () => {
   app.quit();
 });
 
-protocol.registerSchemas();
+protocol.registerHandlers();
 
-  let lastWindowState = Storage.get('lastWindowState');
+let lastWindowState = Storage.get('lastWindowState');
 
-  if (lastWindowState === null) {
-    lastWindowState = {
-      height: WindowHeight,
-      width: WindowWidth,
-    };
-  }
+if (lastWindowState === null) {
+  lastWindowState = {
+    height: WindowHeight,
+    width: WindowWidth,
+  };
+}
 
 app.on('ready', async () => {
   // eslint-disable-next-line global-require
