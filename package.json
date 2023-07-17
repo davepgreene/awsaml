@@ -29,7 +29,7 @@
     "build": "node build.js",
     "show-appcast-checkpoint": "curl --compressed --location --user-agent 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36' 'https://github.com/rapid7/awsaml/releases.atom' | /usr/bin/sed 's|<pubDate>[^<]*</pubDate>||g' | shasum --algorithm 256",
     "start": "electron-forge start",
-    "package": "electron-forge package",
+    "package": "electron-forge package --arch=universal --platform=darwin",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "clean": "rm -rf out && rm -rf build"
