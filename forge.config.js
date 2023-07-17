@@ -112,9 +112,10 @@ const config = {
 if (process.env.BUILD_NUMBER && process.env.BUILD_NUMBER !== '') {
   config.packagerConfig.osxSign = {};
   config.packagerConfig.osxNotarize = {
-    tool: 'notarytool', // xcrun notarytool
-    keychain: process.env.KEYCHAIN,
-    keychainProfile: process.env.KEYCHAIN_PROFILE,
+    tool: 'notarytool',
+    appleId: process.env.NOTARIZE_CREDS_USR,
+    appleIdPassword: process.env.NOTARIZE_CREDS_PSW,
+    teamId: process.env.MAC_TEAM_ID,
   };
 }
 
