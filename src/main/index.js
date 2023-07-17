@@ -122,8 +122,8 @@ app.on('ready', async () => {
   await mainWindow.loadURL(baseUrl);
 
   mainWindow.on('ready-to-show', () => {
-      mainWindow.show();
-    });
+    mainWindow.show();
+  });
 
   mainWindow.webContents.on('did-finish-load', () => loadTouchBar(mainWindow, storedMetadataUrls));
 
