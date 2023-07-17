@@ -55,8 +55,6 @@ app.on('window-all-closed', () => {
   app.quit();
 });
 
-protocol.registerHandlers();
-
 let lastWindowState = Storage.get('lastWindowState');
 
 if (lastWindowState === null) {
