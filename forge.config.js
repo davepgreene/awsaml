@@ -97,7 +97,7 @@ const config = {
       name: '@electron-forge/publisher-github',
       config: {
         repository: {
-          owner: 'rapid7',
+          owner: 'mmurrell-r7',
           name: 'awsaml',
         },
         draft: true,
