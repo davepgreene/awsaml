@@ -33,7 +33,7 @@ async function refreshCallback(profileName, session, wc) {
   try {
     data = await client.send(command);
   } catch (e) {
-    console.error(e); // eslint-disable-line no-console
+    console.error(e);
     return {
       redirect: config.auth.entryPoint,
       logout: true,

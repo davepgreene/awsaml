@@ -13,7 +13,8 @@ async function refreshJitCallback(profileName, session) {
     profileName,
   };
 
-  let creds = {};
+  let creds = {}; //eslint-disable-line no-useless-assignment
+
   let response;
   try {
     response = await fetch(encodeURI(session.apiUri), {
@@ -21,9 +22,11 @@ async function refreshJitCallback(profileName, session) {
       headers: session.header,
     });
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
+    console.error(err);
     Manager.removeByName(profileName);
-    throw new Error(`AWSAML is unable to fetch credentials from ICS. HTTPS request to URI: ${session.apiUri}`);
+    throw new Error(`AWSAML is unable to fetch credentials from ICS. HTTPS request to URI: ${session.apiUri}`,{
+      cause: err,
+    });
   }
 
   if (response.ok) {

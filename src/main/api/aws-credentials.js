@@ -16,7 +16,6 @@ class AwsCredentials {
     this.saveAsIniFile(credentials, profile, done, region);
   }
 
-  // eslint-disable-next-line class-methods-use-this, consistent-return
   saveAsIniFile(credentials, profile, done, region = '') {
     const home = AwsCredentials.resolveHomePath();
 

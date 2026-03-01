@@ -71,7 +71,6 @@ if (lastWindowState === null) {
 protocol.registerSchemas();
 
 app.on('ready', async () => {
-  // eslint-disable-next-line global-require
   require('./menu');
 
   protocol.registerHandlers();

@@ -78,7 +78,7 @@ describe('AwsCredentials#saveAsIniFile', () => {
     process.env.HOME = __dirname;
 
     aws.saveAsIniFile({}, 'profile', (error) => {
-      expect(FS.statSync(awsFolder).mode & 0x0700).toEqual(256); // eslint-disable-line no-bitwise
+      expect(FS.statSync(awsFolder).mode & 0x0700).toEqual(256);
       expect(error).toBeNull();
       done();
     });

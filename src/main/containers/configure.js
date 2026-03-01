@@ -78,7 +78,6 @@ async function asyncHttpsGet(url) {
   return new Promise((resolve, reject) => {
     let data = '';
 
-    // eslint-disable-next-line consistent-return
     https.get(url, (res) => {
       if (res.statusCode !== 200) {
         return reject(res);
@@ -196,6 +195,7 @@ async function login(event, payload) {
   try {
     data = await asyncHttpsGet(metadataUrl);
   } catch (e) {
+    console.error(e);
     Storage.set('metadataUrlValid', false);
     Storage.set('metadataUrlError', Errors.urlInvalidErr);
 
@@ -213,7 +213,8 @@ async function login(event, payload) {
   const safeXpath = (doc, p) => {
     try {
       return xpath(doc, p);
-    } catch (_) {
+    } catch (e) {
+      console.error(e);
       return null;
     }
   };

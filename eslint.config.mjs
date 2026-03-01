@@ -1,6 +1,6 @@
 import js from '@eslint/js';
+import { fixupPluginRules } from "@eslint/compat";
 import globals from 'globals';
-import babelParser from '@babel/eslint-parser';
 import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import reactPlugin from 'eslint-plugin-react';
@@ -17,30 +17,23 @@ export default [
   {
     files: ['eslint.config.mjs'],
     languageOptions: {
-      globals: { ...globals.node },
+      globals: globals.node,
     },
   },
   {
     files: ['**/*.js', '**/*.jsx'],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 2023,
       sourceType: 'module',
-      parser: babelParser,
-      parserOptions: {
-        requireConfigFile: false,
-        babelOptions: {
-          presets: ['@babel/preset-react'],
-        },
-      },
       globals: {
         ...globals.node,
-        Storage: true,
-        Manager: true,
+        Storage: 'writable',
+        Manager: 'writable',
       },
     },
     plugins: {
-      import: importPlugin,
-      react: reactPlugin,
+      import: fixupPluginRules(importPlugin),
+      react: fixupPluginRules(reactPlugin),
     },
     settings: {
       react: { version: 'detect' },
@@ -65,7 +58,7 @@ export default [
     files: ['test/**/*.js'],
     languageOptions: {
       sourceType: 'module',
-      globals: { ...globals.jest },
+      globals: globals.jest,
     },
     plugins: { jest: jestPlugin },
     rules: {
@@ -77,19 +70,19 @@ export default [
   },
   {
     files: ['src/**/*.js', 'src/**/*.jsx'],
-    languageOptions: { globals: { ...globals.browser } },
+    languageOptions: { globals: globals.browser },
     plugins: { 'react-hooks': reactHooksPlugin },
   },
   {
     files: ['src/renderer/**/*.ts', 'src/renderer/**/*.tsx'],
     languageOptions: {
       parser: tsParser,
-      globals: { ...globals.browser, process: true, React: true },
+      globals: { ...globals.browser, process: 'readonly', React: 'readonly' },
     },
     plugins: {
       '@typescript-eslint': tsPlugin,
       'react-hooks': reactHooksPlugin,
-      react: reactPlugin,
+      react: fixupPluginRules(reactPlugin),
     },
     rules: {
       ...tsPlugin.configs.recommended.rules,
