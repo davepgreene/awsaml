@@ -1,9 +1,7 @@
-import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
+import { useCallback } from 'react';
 import styled from 'styled-components';
 import { ListGroup } from 'reactstrap';
 import update from 'immutability-helper';
-
 import Login from './Login';
 
 const ScrollableListGroup = styled(ListGroup)`
@@ -11,19 +9,29 @@ const ScrollableListGroup = styled(ListGroup)`
   height: 300px;
 `;
 
-function LoginList(props) {
-  const {
-    filteredMetadataUrls,
-    deleteCallback,
-    reOrderCallback,
-    errorHandler,
-    darkMode,
-  } = props;
+interface MetadataUrl {
+  url: string;
+  name: string;
+  profileUuid: string;
+}
 
-  const moveLogin = useCallback((dragIndex, hoverIndex) => {
-    if (dragIndex === undefined) {
-      return;
-    }
+interface LoginListProps {
+  filteredMetadataUrls: MetadataUrl[];
+  deleteCallback: (payload: { profileUuid: string }) => void;
+  reOrderCallback: (urls: MetadataUrl[]) => void;
+  errorHandler: (error: string) => void;
+  darkMode: boolean;
+}
+
+function LoginList({
+  filteredMetadataUrls,
+  deleteCallback,
+  reOrderCallback,
+  errorHandler,
+  darkMode,
+}: LoginListProps) {
+  const moveLogin = useCallback((dragIndex: number, hoverIndex: number) => {
+    if (dragIndex === undefined) return;
 
     const updatedMetadataUrls = update(filteredMetadataUrls, {
       $splice: [
@@ -33,7 +41,7 @@ function LoginList(props) {
     });
 
     reOrderCallback(updatedMetadataUrls);
-  }, [filteredMetadataUrls]);
+  }, [filteredMetadataUrls, reOrderCallback]);
 
   return (
     <ScrollableListGroup>
@@ -53,17 +61,5 @@ function LoginList(props) {
     </ScrollableListGroup>
   );
 }
-
-LoginList.propTypes = {
-  filteredMetadataUrls: PropTypes.arrayOf(PropTypes.shape({
-    url: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    profileUuid: PropTypes.string.isRequired,
-  })).isRequired,
-  deleteCallback: PropTypes.func.isRequired,
-  reOrderCallback: PropTypes.func.isRequired,
-  errorHandler: PropTypes.func.isRequired,
-  darkMode: PropTypes.bool.isRequired,
-};
 
 export default LoginList;

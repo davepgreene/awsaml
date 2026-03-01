@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Route,
   Routes,
@@ -67,19 +66,19 @@ const GlobalStyle = createGlobalStyle`
 
 function App() {
   return (
-    <React.StrictMode>
+    <>
       <ErrorBoundary>
         <MemoryRouter>
           <Routes>
-            <Route element={<Configure />} path="/" exact />
-            <Route element={<Refresh />} path="/refresh" exact />
-            <Route element={<SelectRole />} path="/select-role" exact />
-            {debug ? <Route element={<DebugRoute />} /> : ''}
+            <Route element={<Configure />} path="/" />
+            <Route element={<Refresh />} path="/refresh" />
+            <Route element={<SelectRole />} path="/select-role" />
+            {debug ? <Route element={<DebugRoute />} /> : null}
           </Routes>
         </MemoryRouter>
       </ErrorBoundary>
       <GlobalStyle />
-    </React.StrictMode>
+    </>
   );
 }
 

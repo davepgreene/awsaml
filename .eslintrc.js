@@ -11,6 +11,11 @@ module.exports = {
       'electron-packager',
       'electron-devtools-installer',
     ],
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
   },
   extends: [
     'airbnb',
@@ -32,9 +37,15 @@ module.exports = {
     },
   },
   rules: {
-    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
+    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx', '.tsx'] }],
     'import/no-extraneous-dependencies': ['error', {
       devDependencies: true,
+    }],
+    'import/extensions': ['error', 'ignorePackages', {
+      js: 'never',
+      jsx: 'never',
+      ts: 'never',
+      tsx: 'never',
     }],
     'linebreak-style': ['error', process.platform === 'win32' ? 'windows' : 'unix'],
     'global-require': 0,
@@ -68,6 +79,25 @@ module.exports = {
       plugins: [
         'react-hooks',
       ],
+    },
+    {
+      files: ['src/renderer/**/*.ts', 'src/renderer/**/*.tsx'],
+      env: {
+        browser: true,
+      },
+      parser: '@typescript-eslint/parser',
+      plugins: [
+        'react-hooks',
+        '@typescript-eslint',
+      ],
+      extends: [
+        'airbnb',
+        'plugin:@typescript-eslint/recommended',
+      ],
+      rules: {
+        'react/require-default-props': 'off',
+        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      },
     },
   ],
 };

@@ -29,7 +29,7 @@
     "react-start": "vite",
     "react-build": "vite build",
     "test": "jest",
-    "lint": "eslint '*.js' 'src/**/*.js' 'src/**/*.jsx' 'test/**/*.js'",
+    "lint": "eslint '*.js' 'src/**/*.js' 'src/**/*.jsx' 'src/**/*.ts' 'src/**/*.tsx' 'test/**/*.js'",
     "report": "coveralls < ./coverage/lcov.info",
     "build": "node build.js",
     "show-appcast-checkpoint": "curl --compressed --location --user-agent 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36' 'https://github.com/rapid7/awsaml/releases.atom' | /usr/bin/sed 's|<pubDate>[^<]*</pubDate>||g' | shasum --algorithm 256",
@@ -82,6 +82,10 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.6",
     "@popperjs/core": "^2.11.8",
+    "@types/react": "^18.3.28",
+    "@types/react-dom": "^18.3.7",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
     "@vitejs/plugin-react": "^4.7.0",
     "babel-jest": "^29.7.0",
     "bootstrap": "^5.3.8",
@@ -111,7 +115,7 @@
     "reactstrap": "^9.2.3",
     "should": "^13.2.3",
     "styled-components": "^6.3.11",
-    "typescript": "^4.9.5",
+    "typescript": "^5.9.3",
     "vite": "^5.4.21"
   },
   "browserslist": {

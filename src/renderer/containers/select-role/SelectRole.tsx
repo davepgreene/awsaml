@@ -1,30 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Container,
-  ListGroup,
-  Row,
-} from 'reactstrap';
+import { useState, useEffect, MouseEvent } from 'react';
+import { Container, ListGroup, Row } from 'reactstrap';
 import { Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Error from '../components/Error';
 import Role from './Role';
 import Logo from '../components/Logo';
-import {
-  RoundedContent,
-  RoundedWrapper,
-} from '../../constants/styles';
+import { RoundedContent, RoundedWrapper } from '../../constants/styles';
 
 const SelectRoleHeader = styled.h4`
   margin-top: 15px;
   padding-top: 15px;
 `;
 
+interface RoleData {
+  index: number;
+  accountId: string;
+  roleName: string;
+  principalArn: string;
+  roleArn: string;
+}
+
 function SelectRole() {
   const [displayAccountId, setDisplayAccountId] = useState(true);
-  const [roles, setRoles] = useState([]);
+  const [roles, setRoles] = useState<RoleData[]>([]);
   const [status, setStatus] = useState('');
   const [error, setError] = useState('');
-  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -32,27 +32,21 @@ function SelectRole() {
       setRoles(data.roles);
 
       const uniqueAccountIds = new Set(data.roles.map((role) => role.accountId));
-
       if (uniqueAccountIds.size === 1) {
         setDisplayAccountId(false);
       }
     })();
 
-    window.electronAPI.darkModeUpdated((event, value) => {
-      setDarkMode(value);
-    });
-
-    return () => {};
+    window.electronAPI.darkModeUpdated(() => {});
   }, []);
 
-  const handleClick = (index) => async (event) => {
+  const handleClick = (index: number) => async (event: MouseEvent) => {
     event.preventDefault();
 
     const data = await window.electronAPI.setRole({ index });
-
     if (data.error) {
       setError(data.error);
-    } else {
+    } else if (data.status) {
       setStatus(data.status);
     }
   };
@@ -70,25 +64,15 @@ function SelectRole() {
             <Error error={error} />
             <SelectRoleHeader>Select a role:</SelectRoleHeader>
             <ListGroup>
-              {
-                roles.map((role) => {
-                  const roleOnClick = handleClick(role.index);
-
-                  return (
-                    <Role
-                      accountId={role.accountId}
-                      displayAccountId={displayAccountId}
-                      index={role.index}
-                      key={`role-item-${role.index}`}
-                      name={role.roleName}
-                      principalArn={role.principalArn}
-                      roleArn={role.roleArn}
-                      onClick={roleOnClick}
-                      darkMode={darkMode}
-                    />
-                  );
-                })
-              }
+              {roles.map((role) => (
+                <Role
+                  accountId={role.accountId}
+                  displayAccountId={displayAccountId}
+                  key={`role-item-${role.index}`}
+                  name={role.roleName}
+                  onClick={handleClick(role.index)}
+                />
+              ))}
             </ListGroup>
           </RoundedContent>
         </RoundedWrapper>

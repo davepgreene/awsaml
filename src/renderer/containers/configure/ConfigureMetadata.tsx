@@ -1,9 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import {
-  Button,
-  Input,
-} from 'reactstrap';
+import { useState, useEffect, ChangeEvent, KeyboardEvent, MouseEvent } from 'react';
+import { Button, Input } from 'reactstrap';
 import styled from 'styled-components';
 
 const FullSizeLabel = styled.label`
@@ -11,12 +7,12 @@ const FullSizeLabel = styled.label`
   padding-bottom: 1rem;
 `;
 
-function ConfigureMetadata(props) {
-  const {
-    setError,
-    setMetadataUrlValid,
-  } = props;
+interface ConfigureMetadataProps {
+  setError: (error: string) => void;
+  setMetadataUrlValid: (valid: boolean) => void;
+}
 
+function ConfigureMetadata({ setError, setMetadataUrlValid }: ConfigureMetadataProps) {
   const [metadataUrl, setMetadataUrl] = useState('');
   const [profileName, setProfileName] = useState('');
   const [urlGroupClass, setUrlGroupClass] = useState('form-group');
@@ -24,10 +20,7 @@ function ConfigureMetadata(props) {
 
   useEffect(() => {
     (async () => {
-      const {
-        url,
-        name,
-      } = await window.electronAPI.getDefaultMetadata();
+      const { url, name } = await window.electronAPI.getDefaultMetadata();
       setMetadataUrl(url);
       setProfileName(name);
 
@@ -35,49 +28,34 @@ function ConfigureMetadata(props) {
       setDarkMode(dm);
     })();
 
-    window.electronAPI.darkModeUpdated((event, value) => {
-      setDarkMode(value);
-    });
+    window.electronAPI.darkModeUpdated((_, value) => setDarkMode(value));
   }, []);
 
-  const handleInputChange = ({ target: { name, value } }) => {
-    switch (name) {
-      case 'profileName':
-        setProfileName(value);
-        break;
-      case 'metadataUrl':
-        setMetadataUrl(value);
-        break;
-      default:
-        break;
-    }
+  const handleInputChange = ({ target: { name, value } }: ChangeEvent<HTMLInputElement>) => {
+    if (name === 'profileName') setProfileName(value);
+    else if (name === 'metadataUrl') setMetadataUrl(value);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: MouseEvent | KeyboardEvent) => {
     event.preventDefault();
 
-    const payload = {
+    const { error, redirect, metadataUrlValid } = await window.electronAPI.login({
       metadataUrl,
       profileName,
-    };
+    });
 
-    const {
-      error,
-      redirect,
-      metadataUrlValid,
-    } = await window.electronAPI.login(payload);
     if (error) {
       setError(error);
-      setMetadataUrlValid(metadataUrlValid);
+      setMetadataUrlValid(metadataUrlValid ?? true);
       setUrlGroupClass('form-group has-error');
     }
 
-    if (redirect) {
-      document.location.replace(redirect);
-    }
+    if (redirect) document.location.replace(redirect);
   };
 
-  const handleKeyDown = (event) => event.keyCode === 13 && handleSubmit(event);
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.keyCode === 13) handleSubmit(event);
+  };
 
   return (
     <fieldset>
@@ -113,20 +91,11 @@ function ConfigureMetadata(props) {
           />
         </FullSizeLabel>
       </div>
-      <Button
-        color="primary"
-        onClick={handleSubmit}
-        outline={!darkMode}
-      >
+      <Button color="primary" onClick={handleSubmit} outline={!darkMode}>
         Done
       </Button>
     </fieldset>
   );
 }
-
-ConfigureMetadata.propTypes = {
-  setError: PropTypes.func.isRequired,
-  setMetadataUrlValid: PropTypes.func.isRequired,
-};
 
 export default ConfigureMetadata;

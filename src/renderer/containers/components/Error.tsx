@@ -1,30 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import { Alert } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-function Error(props) {
-  const {
-    error,
-    metadataUrlValid,
-  } = props;
+interface ErrorProps {
+  error?: string;
+  metadataUrlValid?: boolean;
+}
 
+function Error({ error = '', metadataUrlValid = true }: ErrorProps) {
   return (error || metadataUrlValid === false) ? (
     <Alert color="danger" fade={false}>
       <FontAwesomeIcon icon="exclamation-triangle" />
       {`   ${error}`}
     </Alert>
-  ) : '';
+  ) : null;
 }
-
-Error.propTypes = {
-  error: PropTypes.string,
-  metadataUrlValid: PropTypes.bool,
-};
-
-Error.defaultProps = {
-  error: '',
-  metadataUrlValid: true,
-};
 
 export default Error;

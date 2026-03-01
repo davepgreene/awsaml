@@ -1,9 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
+import { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import styled from 'styled-components';
-import {
-  Input,
-} from 'reactstrap';
+import { Input } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -32,37 +29,34 @@ const SearchInput = styled(Input)`
   padding-left: 30px;
 `;
 
-const filterMetadataUrls = (metadataUrls, filterText) => {
-  if (!filterText) {
-    return metadataUrls;
-  }
+interface MetadataUrl {
+  url: string;
+  name: string;
+  profileUuid: string;
+  roles?: string[];
+}
+
+const filterMetadataUrls = (metadataUrls: MetadataUrl[], filterText: string): MetadataUrl[] => {
+  if (!filterText) return metadataUrls;
 
   const tokens = filterText.split(' ').map((token) => token.toLowerCase());
 
-  return metadataUrls.filter((metadataUrl) => (tokens.every((token) => {
-    // Compare profile name
-    if (metadataUrl.name.toLowerCase().indexOf(token) !== -1) {
-      return true;
-    }
-
-    // Compare profile URL
-    if (metadataUrl.url.toLowerCase().indexOf(token) !== -1) {
-      return true;
-    }
-
-    // Compare profile roles
-    return (metadataUrl.roles || []).some((role) => role.toLowerCase().indexOf(token) !== -1);
-  })
-  ));
+  return metadataUrls.filter((metadataUrl) =>
+    tokens.every((token) => {
+      if (metadataUrl.name.toLowerCase().indexOf(token) !== -1) return true;
+      if (metadataUrl.url.toLowerCase().indexOf(token) !== -1) return true;
+      return (metadataUrl.roles || []).some((role) => role.toLowerCase().indexOf(token) !== -1);
+    })
+  );
 };
 
-function RecentLogins(props) {
-  const {
-    errorHandler,
-  } = props;
+interface RecentLoginsProps {
+  errorHandler: (error: string) => void;
+}
 
+function RecentLogins({ errorHandler }: RecentLoginsProps) {
   const [filterText, setFilterText] = useState('');
-  const [metadataUrls, setMetadataUrls] = useState('');
+  const [metadataUrls, setMetadataUrls] = useState<MetadataUrl[]>([]);
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
@@ -74,23 +68,21 @@ function RecentLogins(props) {
       setDarkMode(dm);
     })();
 
-    window.electronAPI.darkModeUpdated((event, value) => {
-      setDarkMode(value);
-    });
-
-    return () => {};
+    window.electronAPI.darkModeUpdated((_, value) => setDarkMode(value));
   }, []);
 
-  // eslint-disable-next-line max-len
-  const handleFilterInputChange = ({ currentTarget: { value: ft } }) => setFilterText(ft);
+  const handleFilterInputChange = ({ currentTarget: { value } }: ChangeEvent<HTMLInputElement>) => {
+    setFilterText(value);
+  };
 
-  const deleteCallback = useCallback((deleted) => {
-    const updatedMetadataUrls = metadataUrls
-      .filter((metadataUrl) => metadataUrl.profileUuid !== deleted.profileUuid);
+  const deleteCallback = useCallback((deleted: { profileUuid: string }) => {
+    const updatedMetadataUrls = metadataUrls.filter(
+      (metadataUrl) => metadataUrl.profileUuid !== deleted.profileUuid
+    );
     setMetadataUrls(updatedMetadataUrls);
   }, [metadataUrls]);
 
-  const reorderCallback = useCallback((updatedMetadataUrls) => {
+  const reorderCallback = useCallback((updatedMetadataUrls: MetadataUrl[]) => {
     setMetadataUrls(updatedMetadataUrls);
     window.electronAPI.setMetadataUrls(updatedMetadataUrls);
   }, []);
@@ -98,21 +90,15 @@ function RecentLogins(props) {
   const filteredMetadataUrls = filterMetadataUrls(metadataUrls, filterText);
 
   return (
-    <div
-      className="position-relative"
-      id="recent-logins"
-    >
+    <div className="position-relative" id="recent-logins">
       <RecentLoginsHeader>Recent Logins</RecentLoginsHeader>
       <SearchContainer>
         <SearchInput onChange={handleFilterInputChange} />
-        <SearchIcon
-          color="grey"
-          icon={['fas', 'search']}
-        />
+        <SearchIcon color="grey" icon={['fas', 'search']} />
       </SearchContainer>
       <DndProvider backend={HTML5Backend}>
         <LoginList
-          filteredMetadataUrls={filteredMetadataUrls || []}
+          filteredMetadataUrls={filteredMetadataUrls}
           deleteCallback={deleteCallback}
           reOrderCallback={reorderCallback}
           errorHandler={errorHandler}
@@ -122,9 +108,5 @@ function RecentLogins(props) {
     </div>
   );
 }
-
-RecentLogins.propTypes = {
-  errorHandler: PropTypes.func.isRequired,
-};
 
 export default RecentLogins;

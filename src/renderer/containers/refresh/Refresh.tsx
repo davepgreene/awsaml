@@ -1,14 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Container,
-  Row,
-  Button,
-  Collapse,
-  Alert,
-} from 'reactstrap';
-import {
-  Navigate,
-} from 'react-router-dom';
+import { useState, useEffect, MouseEvent } from 'react';
+import { Container, Row, Button, Collapse, Alert } from 'reactstrap';
+import { Navigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
 import Error from '../components/Error';
@@ -16,11 +8,7 @@ import Logo from '../components/Logo';
 import Credentials from './Credentials';
 import Logout from './Logout';
 import InputGroupWithCopyButton from '../components/InputGroupWithCopyButton';
-import {
-  RoundedContent,
-  RoundedWrapper,
-  DARK_MODE_AWARE_BORDERLESS_BUTTON,
-} from '../../constants/styles';
+import { RoundedContent, RoundedWrapper, DARK_MODE_AWARE_BORDERLESS_BUTTON } from '../../constants/styles';
 import useInterval from '../../constants/hooks';
 
 const EnvVar = styled(RoundedContent)`
@@ -30,13 +18,8 @@ const EnvVar = styled(RoundedContent)`
 `;
 
 const DarkModeAwareCard = styled.div`
-  @media (prefers-color-scheme: dark) {
-    border-color: rgb(249, 249, 249);
-  }
-
-  @media (prefers-color-scheme: light) {
-    border-color: #333;
-  }
+  @media (prefers-color-scheme: dark) { border-color: rgb(249, 249, 249); }
+  @media (prefers-color-scheme: light) { border-color: #333; }
 `;
 
 const AccountProps = styled.dl`
@@ -65,51 +48,42 @@ const BorderlessButton = styled(Button)`
   ${DARK_MODE_AWARE_BORDERLESS_BUTTON}
 `;
 
-const getLang = (platform) => (platform === 'win32' ? 'language-batch' : 'language-bash');
+const getLang = (platform: string) => (platform === 'win32' ? 'language-batch' : 'language-bash');
+const getTerm = (platform: string) => (platform === 'win32' ? 'command prompt' : 'terminal');
+const getExport = (platform: string) => (platform === 'win32' ? 'set' : 'export');
 
-const getTerm = (platform) => (platform === 'win32' ? 'command prompt' : 'terminal');
-
-const getExport = (platform) => (platform === 'win32' ? 'set' : 'export');
-
-const getEnvVars = ({ platform, accountId }) => `
+const getEnvVars = ({ platform, accountId }: { platform: string; accountId: string }) => `
 ${getExport(platform)} AWS_PROFILE=awsaml-${accountId}
 ${getExport(platform)} AWS_DEFAULT_PROFILE=awsaml-${accountId}
 `.trim();
 
-const relativeDate = (date) => {
-  const deltaSeconds = (new Date(date) - new Date()) / 1000;
-  const relative = [];
+const relativeDate = (date: string) => {
+  const deltaSeconds = (new Date(date).getTime() - new Date().getTime()) / 1000;
+  const relative: string[] = [];
 
   const hours = Math.floor(deltaSeconds / 3600);
   const minutes = Math.floor((deltaSeconds % 3600) / 60);
   const seconds = Math.floor(deltaSeconds % 60);
 
-  if (hours) {
-    relative.push(`${hours}h`);
-  }
-  if (minutes) {
-    relative.push(`${minutes}m`);
-  } else {
-    relative.push('0m');
-  }
-
-  if (seconds) {
-    relative.push(`${seconds}s`);
-  } else {
-    relative.push('0s');
-  }
+  if (hours) relative.push(`${hours}h`);
+  relative.push(minutes ? `${minutes}m` : '0m');
+  relative.push(seconds ? `${seconds}s` : '0s');
 
   return relative.join(' ');
 };
 
+interface CredentialsState {
+  accessKey: string;
+  secretKey: string;
+  sessionToken: string;
+  expiration: string;
+}
+
 function Refresh() {
-  const [caretDirection, setCaretDirection] = useState('down');
+  const [caretDirection, setCaretDirection] = useState<'right' | 'down'>('down');
   const [isOpen, setIsOpen] = useState(true);
-  const [credentials, setCredentials] = useState({
-    accessKey: '',
-    secretKey: '',
-    sessionToken: '',
-    expiration: '',
+  const [credentials, setCredentials] = useState<CredentialsState>({
+    accessKey: '', secretKey: '', sessionToken: '', expiration: '',
   });
   const [accountId, setAccountId] = useState('');
   const [platform, setPlatform] = useState('');
@@ -117,14 +91,25 @@ function Refresh() {
   const [roleName, setRoleName] = useState('');
   const [showRole, setShowRole] = useState(false);
   const [error, setError] = useState('');
-  const [status, setStatus] = useState(null);
+  const [status, setStatus] = useState<number | null>(null);
   const [ttl, setTtl] = useState('');
   const [localExpiration, setLocalExpiration] = useState(new Date());
   const [darkMode, setDarkMode] = useState(false);
-  const { accessKey, secretKey, sessionToken } = credentials;
   const [flash, setFlash] = useState('');
+  const { accessKey, secretKey, sessionToken } = credentials;
 
-  const getSuccessCallback = (data) => {
+  const getSuccessCallback = (data: {
+    accountId: string;
+    accessKey: string;
+    secretKey: string;
+    sessionToken: string;
+    expiration: string;
+    platform: string;
+    profileName: string;
+    roleName: string;
+    showRole: boolean;
+    error?: string;
+  }) => {
     const firstLoad = credentials.accessKey === '';
 
     setAccountId(data.accountId);
@@ -134,10 +119,8 @@ function Refresh() {
       sessionToken: data.sessionToken,
       expiration: data.expiration,
     });
-
     setTtl(relativeDate(data.expiration));
     setLocalExpiration(new Date(data.expiration));
-
     setPlatform(data.platform);
     setProfileName(data.profileName);
     setRoleName(data.roleName);
@@ -149,11 +132,8 @@ function Refresh() {
     } else {
       if (!firstLoad) {
         setFlash('Updated credentials');
-        setTimeout(() => {
-          setFlash('');
-        }, 3000);
+        setTimeout(() => setFlash(''), 3000);
       }
-
       setError('');
     }
   };
@@ -163,40 +143,24 @@ function Refresh() {
   }, 1000);
 
   useEffect(() => {
-    (async () => { // eslint-disable-line consistent-return
+    (async () => {
       const data = await window.electronAPI.refresh();
-
       if (data.redirect) {
         window.location.href = data.redirect;
       }
-
       const dm = await window.electronAPI.getDarkMode();
       setDarkMode(dm);
     })();
 
-    window.electronAPI.darkModeUpdated((event, value) => {
-      setDarkMode(value);
-    });
-
-    window.electronAPI.reloadUi((event, value) => {
-      getSuccessCallback(value);
-    });
-
-    return () => {};
+    window.electronAPI.darkModeUpdated((_, value) => setDarkMode(value));
+    window.electronAPI.reloadUi((_, value) => getSuccessCallback(value));
   }, []);
 
-  const handleRefreshClickEvent = async (event) => {
+  const handleRefreshClickEvent = async (event: MouseEvent) => {
     event.preventDefault();
-
     const data = await window.electronAPI.refresh();
-
-    if (data.redirect) {
-      window.location.href = data.redirect;
-    }
-
-    if (data.logout) {
-      setStatus(data.logout);
-    }
+    if (data.redirect) window.location.href = data.redirect;
+    if (data.logout) setStatus(data.logout);
   };
 
   const handleCollapse = () => {
@@ -204,9 +168,7 @@ function Refresh() {
     setIsOpen(!isOpen);
   };
 
-  if (status === 401) {
-    return <Navigate to="/" />;
-  }
+  if (status === 401) return <Navigate to="/" />;
 
   return (
     <Container>
@@ -215,19 +177,14 @@ function Refresh() {
           <Logo />
           <RoundedContent>
             <Alert color="success" fade isOpen={!!flash}>
-              <FontAwesomeIcon icon="fa-brands fa-aws" />
+              <FontAwesomeIcon icon={['fab', 'aws']} />
               {`   ${flash}`}
             </Alert>
             <Error error={error} />
             <div>
-              <BorderlessButton
-                onClick={handleCollapse}
-                outline={!darkMode}
-                color="link"
-              >
-                <FontAwesomeIcon icon={['fas', `fa-caret-${caretDirection}`]} />
-                {'   '}
-                &nbsp;&nbsp;&nbsp;Account
+              <BorderlessButton onClick={handleCollapse} outline={!darkMode} color="link">
+                <FontAwesomeIcon icon={['fas', caretDirection === 'right' ? 'caret-right' : 'caret-down']} />
+                {'   '}&nbsp;&nbsp;&nbsp;Account
               </BorderlessButton>
               <Collapse isOpen={isOpen}>
                 <DarkModeAwareCard className="card card-body bg-transparent mb-3">
@@ -246,20 +203,10 @@ function Refresh() {
                 </DarkModeAwareCard>
               </Collapse>
             </div>
-            <Credentials
-              awsAccessKey={accessKey}
-              awsSecretKey={secretKey}
-              awsSessionToken={sessionToken}
-              darkMode={darkMode}
-            />
+            <Credentials awsAccessKey={accessKey} awsSecretKey={secretKey} awsSessionToken={sessionToken} darkMode={darkMode} />
             <EnvVar>
-              <p>
-                Run these commands from a
-                {` ${getTerm(platform)} `}
-                to use the AWS CLI:
-              </p>
+              <p>Run these commands from a{` ${getTerm(platform)} `}to use the AWS CLI:</p>
               <PreInputGroupWithCopyButton
-                buttonClassName="bg-dark text-light"
                 id="envvars"
                 inputClassName={`bg-dark text-light ${getLang(platform)}`}
                 multiLine
@@ -268,22 +215,10 @@ function Refresh() {
                 darkMode={darkMode}
               />
             </EnvVar>
-            <div>
-              <b>Expires in:</b>
-              {` ${ttl}`}
-            </div>
-            <div className="mb-3">
-              <b>Expires at:</b>
-              {` ${localExpiration.toString()}`}
-            </div>
+            <div><b>Expires in:</b>{` ${ttl}`}</div>
+            <div className="mb-3"><b>Expires at:</b>{` ${localExpiration.toString()}`}</div>
             <span className="ml-auto">
-              <Button
-                color="secondary"
-                onClick={handleRefreshClickEvent}
-                outline={!darkMode}
-              >
-                Refresh
-              </Button>
+              <Button color="secondary" onClick={handleRefreshClickEvent} outline={!darkMode}>Refresh</Button>
               <Logout darkMode={darkMode} />
             </span>
           </RoundedContent>

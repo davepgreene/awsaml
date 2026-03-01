@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Container,
   Row,
@@ -10,10 +9,10 @@ const COLUMN_STYLE = {
   fontSize: '1.2rem',
 };
 
-const generateDebugReport = (hash, pathname, search) => `
-pathname: ${pathname}
-search: ${search}
-hash: ${hash}
+const generateDebugReport = (location: { hash: string; pathname: string; search: string }) => `
+pathname: ${location.pathname}
+search: ${location.search}
+hash: ${location.hash}
 `.trim();
 
 function DebugRoute() {
@@ -25,11 +24,7 @@ function DebugRoute() {
         <Col style={COLUMN_STYLE}>
           Route:
           <pre className="language-bash">
-            {generateDebugReport({
-              hash: location.hash,
-              pathname: location.pathname,
-              search: location.search,
-            })}
+            {generateDebugReport(location)}
           </pre>
         </Col>
       </Row>
