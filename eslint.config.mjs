@@ -95,4 +95,20 @@ export default [
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
+  {
+    files: ['src/main/**/*.ts'],
+    languageOptions: {
+      parser: tsParser,
+      globals: globals.node,
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+    },
+    rules: {
+      ...tsPlugin.configs.recommended.rules,
+      quotes: ['error', 'single'],
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
 ];

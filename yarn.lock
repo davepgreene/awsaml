@@ -2194,6 +2194,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@electron-forge/plugin-vite@npm:^7.11.1":
+  version: 7.11.1
+  resolution: "@electron-forge/plugin-vite@npm:7.11.1"
+  dependencies:
+    "@electron-forge/plugin-base": "npm:7.11.1"
+    "@electron-forge/shared-types": "npm:7.11.1"
+    chalk: "npm:^4.0.0"
+    debug: "npm:^4.3.1"
+    fs-extra: "npm:^10.0.0"
+    listr2: "npm:^7.0.2"
+  checksum: 10/9559f07056e5903d4845bc18c9720b62e84d6c4b1aa81822c362a389acbb3a841c47d74e84df37b9e69c168977feded981b769d639dc7372400b429c6013ee10
+  languageName: node
+  linkType: hard
+
 "@electron-forge/plugin-webpack@npm:^7.11.1":
   version: 7.11.1
   resolution: "@electron-forge/plugin-webpack@npm:7.11.1"
@@ -4874,6 +4888,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/express-serve-static-core@npm:^5.0.0":
+  version: 5.1.1
+  resolution: "@types/express-serve-static-core@npm:5.1.1"
+  dependencies:
+    "@types/node": "npm:*"
+    "@types/qs": "npm:*"
+    "@types/range-parser": "npm:*"
+    "@types/send": "npm:*"
+  checksum: 10/7f3d8cf7e68764c9f3e8f6a12825b69ccf5287347fc1c20b29803d4f08a4abc1153ae11d7258852c61aad50f62ef72d4c1b9c97092b0a90462c3dddec2f6026c
+  languageName: node
+  linkType: hard
+
+"@types/express-session@npm:^1.18.2":
+  version: 1.18.2
+  resolution: "@types/express-session@npm:1.18.2"
+  dependencies:
+    "@types/express": "npm:*"
+  checksum: 10/c1711976d089fd6da58c0262e2b21b71ee64d508ee0f9f1b90e7658b712fc59874e03f799757843d2300c1dd127813cd16ce806c208bc4975f0f7ed700f2db94
+  languageName: node
+  linkType: hard
+
 "@types/express@npm:*, @types/express@npm:^4.17.13":
   version: 4.17.21
   resolution: "@types/express@npm:4.17.21"
@@ -4895,6 +4930,17 @@ __metadata:
     "@types/qs": "npm:*"
     "@types/serve-static": "npm:*"
   checksum: 10/cf4d540bbd90801cdc79a46107b8873404698a7fd0c3e8dd42989d52d3bd7f5b8768672e54c20835e41e27349c319bb47a404ad14c0f8db0e9d055ba1cb8a05b
+  languageName: node
+  linkType: hard
+
+"@types/express@npm:^5.0.6":
+  version: 5.0.6
+  resolution: "@types/express@npm:5.0.6"
+  dependencies:
+    "@types/body-parser": "npm:*"
+    "@types/express-serve-static-core": "npm:^5.0.0"
+    "@types/serve-static": "npm:^2"
+  checksum: 10/da2cc3de1b1a4d7f20ed3fb6f0a8ee08e99feb3c2eb5a8d643db77017d8d0e70fee9e95da38a73f51bcdf5eda3bb6435073c0271dc04fb16fda92e55daf911fa
   languageName: node
   linkType: hard
 
@@ -5080,6 +5126,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^25.3.3":
+  version: 25.3.3
+  resolution: "@types/node@npm:25.3.3"
+  dependencies:
+    undici-types: "npm:~7.18.0"
+  checksum: 10/883e8942b0ddf89f9aae56c4205af8d9a368acd6cab83aa052447a6c5e69ce2bc8ab3f54e549233ada160ba9216dad7f30c62c35867c584fe844ae99f7dea2e0
+  languageName: node
+  linkType: hard
+
 "@types/passport-strategy@npm:^0.2.38":
   version: 0.2.38
   resolution: "@types/passport-strategy@npm:0.2.38"
@@ -5190,6 +5245,16 @@ __metadata:
     "@types/mime": "npm:*"
     "@types/node": "npm:*"
   checksum: 10/9b759cf03e0896e9434df6d2d528c3e0016a2cef54e66775fb67f8fa6f9e78eed693adc95b3d6a18aacf629d8d596ad71c1d3eee5ecf95402b766cb012061ca2
+  languageName: node
+  linkType: hard
+
+"@types/serve-static@npm:^2":
+  version: 2.2.0
+  resolution: "@types/serve-static@npm:2.2.0"
+  dependencies:
+    "@types/http-errors": "npm:*"
+    "@types/node": "npm:*"
+  checksum: 10/f2bad1304c7d0d3b7221faff3e490c40129d3803f4fb1b2fb84f31f561071c5e6a4b876c41bbbe82d5645034eea936e946bcaaf993dac1093ce68b56effad6e0
   languageName: node
   linkType: hard
 
@@ -6349,6 +6414,7 @@ __metadata:
     "@electron-forge/maker-rpm": "npm:^7.11.1"
     "@electron-forge/maker-squirrel": "npm:^7.11.1"
     "@electron-forge/maker-zip": "npm:^7.11.1"
+    "@electron-forge/plugin-vite": "npm:^7.11.1"
     "@electron-forge/plugin-webpack": "npm:^7.11.1"
     "@electron-forge/publisher-github": "npm:^7.11.1"
     "@electron/get": "npm:^4.0.2"
@@ -6363,6 +6429,9 @@ __metadata:
     "@fortawesome/react-fontawesome": "npm:^3.2.0"
     "@node-saml/passport-saml": "npm:^5.1.0"
     "@popperjs/core": "npm:^2.11.8"
+    "@types/express": "npm:^5.0.6"
+    "@types/express-session": "npm:^1.18.2"
+    "@types/node": "npm:^25.3.3"
     "@types/react": "npm:^19.2.14"
     "@types/react-dom": "npm:^19.2.3"
     "@typescript-eslint/eslint-plugin": "npm:^8.56.1"
@@ -16431,6 +16500,13 @@ __metadata:
   version: 7.16.0
   resolution: "undici-types@npm:7.16.0"
   checksum: 10/db43439f69c2d94cc29f75cbfe9de86df87061d6b0c577ebe9bb3255f49b22c50162a7d7eb413b0458b6510b8ca299ac7cff38c3a29fbd31af9f504bcf7fbc0d
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~7.18.0":
+  version: 7.18.2
+  resolution: "undici-types@npm:7.18.2"
+  checksum: 10/e61a5918f624d68420c3ca9d301e9f15b61cba6e97be39fe2ce266dd6151e4afe424d679372638826cb506be33952774e0424141200111a9857e464216c009af
   languageName: node
   linkType: hard
 
