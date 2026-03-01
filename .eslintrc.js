@@ -61,7 +61,7 @@ module.exports = {
       },
     },
     {
-      files: 'src/**/*.js',
+      files: ['src/**/*.js', 'src/**/*.jsx'],
       env: {
         browser: true,
       },

@@ -5,8 +5,19 @@ const {
 const {
   readFileSync,
 } = require('node:fs');
+const path = require('node:path');
 const url = require('node:url');
 const { refreshJit } = require('./containers/refresh-jit');
+
+const mimeTypes = {
+  '.html': 'text/html',
+  '.js': 'text/javascript',
+  '.css': 'text/css',
+  '.json': 'application/json',
+  '.png': 'image/png',
+  '.ico': 'image/x-icon',
+  '.svg': 'image/svg+xml',
+};
 
 function registerSchemas() {
   protocol.registerSchemesAsPrivileged([{
@@ -18,8 +29,13 @@ function registerSchemas() {
 function registerHandlers() {
   protocol.handle('awsaml', (request) => {
     const prefix = 'awsaml://'.length;
+    const filePath = url.fileURLToPath(`file://${request.url.slice(prefix)}`);
+    const ext = path.extname(filePath);
+    const mimeType = mimeTypes[ext] || 'application/octet-stream';
 
-    return new Response(readFileSync(url.fileURLToPath(`file://${request.url.slice(prefix)}`)));
+    return new Response(readFileSync(filePath), {
+      headers: { 'Content-Type': mimeType },
+    });
   });
 
   protocol.handle('jit', async (request) => {
