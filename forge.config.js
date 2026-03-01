@@ -62,6 +62,7 @@ const config = {
       /^\/README\.md$/,
     ],
     name: 'Awsaml',
+    executableName: 'awsaml',
     appBundleId: 'com.rapid7.awsaml',
     helperBundleId: 'com.rapid7.awsaml.helper',
     darwinDarkModeSupport: true,
