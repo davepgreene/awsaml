@@ -1,3 +1,5 @@
+import { jest } from '@jest/globals'
+
 import Reloader from '../src/main/api/reloader/reloader';
 
 describe('Reloader', () => {
@@ -22,7 +24,7 @@ describe('Reloader', () => {
       expect(reloader.name).toBe('test-reloader');
       expect(reloader.callback).toBe(callback);
       expect(reloader.interval).toBe(3600000);
-      expect(reloader.role).toBeNull();
+      expect(reloader.role).toBe('');
       expect(reloader.intervalId).toBeNull();
     });
 

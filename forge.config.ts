@@ -18,35 +18,13 @@ const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     prune: true,
-    ignore: [
-      /^\/out($|\/)/,
-      /^\/\.github($|\/)/,
-      /^\/\.yarn($|\/)/,
-      /^\/brew($|\/)/,
-      /^\/test($|\/)/,
-      /^\/public($|\/)/,
-      /^\/\.editorconfig$/,
-      /^\/\.gitattributes$/,
-      /^\/\.gitignore$/,
-      /^\/\.nvmrc$/,
-      /^\/\.yarnrc\.yml$/,
-      /^\/babel\.config\.js$/,
-      /^\/build\.js$/,
-      /^\/cortex\.yaml$/,
-      /^\/craco\.config\.js$/,
-      /^\/forge\.config\.ts$/,
-      /^\/jest\.config\.js$/,
-      /^\/\.eslintrc\.js$/,
-      /^\/tsconfig\.main\.json$/,
-      /^\/vite\.main\.config\.mjs$/,
-      /^\/vite\.renderer\.config\.mjs$/,
-      /^\/yarn\.lock$/,
-      /^\/CHANGELOG\.md$/,
-      /^\/CODE_OF_CONDUCT\.md$/,
-      /^\/README\.md$/,
-    ],
+    ignore: (filePath: string) => {
+      if (filePath === '') return false;
+      // Allowlist: only include these paths
+      return !/^\/(build|dist|images|node_modules|package\.json|LICENSE\.md)(\/|$)/.test(filePath);
+    },
     name: 'Awsaml',
-    executableName: 'awsaml',
+    executableName: 'Awsaml',
     appBundleId: 'com.rapid7.awsaml',
     helperBundleId: 'com.rapid7.awsaml.helper',
     darwinDarkModeSupport: true,
@@ -60,8 +38,11 @@ const config: ForgeConfig = {
         fs.rmSync(buildDirName, { force: true, recursive: true });
       }
       console.log('INFO: Building React assets...');
-      await exec('yarn react-build');
+      await exec('yarn build:react');
       console.log('INFO: React build complete.');
+      console.log('INFO: Building main process...');
+      await exec('yarn build:main');
+      console.log('INFO: Main process build complete.');
     },
   },
   makers: [
@@ -100,9 +81,9 @@ if (process.env.BUILD_NUMBER && process.env.BUILD_NUMBER !== '') {
   config.packagerConfig.osxSign = {};
   config.packagerConfig.osxNotarize = {
     tool: 'notarytool',
-    appleId: process.env.NOTARIZE_CREDS_USR,
-    appleIdPassword: process.env.NOTARIZE_CREDS_PSW,
-    teamId: process.env.MAC_TEAM_ID,
+    appleId: process.env.NOTARIZE_CREDS_USR || '',
+    appleIdPassword: process.env.NOTARIZE_CREDS_PSW || '',
+    teamId: process.env.MAC_TEAM_ID || '',
   };
 }
 

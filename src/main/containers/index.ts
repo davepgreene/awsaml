@@ -1,4 +1,4 @@
-const {
+import {
   getMetadataUrls,
   setMetadataUrls,
   getDefaultMetadata,
@@ -7,22 +7,22 @@ const {
   hasMultipleRoles,
   getProfile,
   deleteProfile,
-} = require('./configure');
+} from './configure'
 
-const {
+import {
   setRole,
   getRoles,
-} = require('./select-role');
+} from './select-role'
 
-const {
+import {
   logout,
-} = require('./logout');
+} from './logout'
 
-const {
+import {
   refresh,
-} = require('./refresh');
+} from './refresh'
 
-module.exports = {
+export default {
   channels: {
     configure: {
       'configure:metadataUrls:get': getMetadataUrls,
@@ -45,4 +45,4 @@ module.exports = {
       'refresh:get': refresh,
     },
   },
-};
+}

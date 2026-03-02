@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.main.json",
+  "compilerOptions": {
+    "types": ["jest", "node"],
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2022",
+    "isolatedModules": true
+  },
+  "include": ["test/**/*.ts", "src/main/**/*.ts"]
+}
+
+

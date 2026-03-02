@@ -1,3 +1,5 @@
+import { jest } from '@jest/globals'
+
 import serverConfig from '../src/main/api/server-config';
 
 describe('Server Config', () => {

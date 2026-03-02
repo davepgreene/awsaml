@@ -1,3 +1,5 @@
+import { jest } from '@jest/globals'
+
 import createManager from '../src/main/api/reloader/manager';
 import Reloader from '../src/main/api/reloader/reloader';
 

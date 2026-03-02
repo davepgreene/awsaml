@@ -5,7 +5,7 @@ This document provides essential information for agents working in the awsaml re
 ## Project Overview
 
 - **Type**: Electron desktop application (cross-platform: macOS, Linux, Windows)
-- **Language**: JavaScript (Node.js backend) + TypeScript (React frontend)
+- **Language**: TypeScript (React frontend and Node.js backend)
 - **Architecture**: Electron main process + React renderer process
 - **Key Purpose**: Automatically rotates AWS credentials every hour via SAML/identity provider authentication
 
@@ -80,6 +80,7 @@ yarn clean
 ```
 
 The build process:
+
 1. Vite builds React assets to `build/` directory
 2. Electron Forge packages the app using `forge.config.js` settings
 
@@ -108,7 +109,6 @@ yarn lint && yarn test
 
 - **Target**: ES2020, DOM
 - **Strict mode**: Enabled (`noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`)
-- **Scope**: Only `src/renderer/` and `tsconfig.node.json`; main process remains JavaScript
 - **Import extensions**: Must be omitted (`.js`/`.ts`/`.tsx` not specified in imports)
 
 ### ESLint Rules
@@ -151,11 +151,13 @@ yarn lint && yarn test
 ## Key Technologies
 
 ### Runtime
+
 - **Electron**: ^31.7.7 (desktop framework)
 - **Node.js**: >=16.0.0
 - **Yarn**: 4.12.0 (package manager)
 
 ### Frontend
+
 - **React**: ^18.3.1
 - **Vite**: ^5.4.21 (build tool)
 - **React Router**: ^6.30.3
@@ -163,11 +165,13 @@ yarn lint && yarn test
 - **Reactstrap**: ^9.2.3 (Bootstrap components)
 
 ### Backend
+
 - **Express**: ^4.22.1
 - **Passport**: ^0.7.0 with SAML strategy
 - **AWS SDK**: @aws-sdk/client-sts ^3.1000.0
 
 ### Development
+
 - **TypeScript**: ^5.9.3
 - **ESLint**: ^8.57.1 (with plugins for React, TypeScript, Jest)
 - **Babel**: ^7.29.0
@@ -178,19 +182,19 @@ yarn lint && yarn test
 ### Jest Setup
 
 - **Test files**: Located in `test/` directory
-- **Pattern**: `test/**/*.js` (CommonJS, not TypeScript)
+- **Pattern**: `test/**/*.ts`
 - **Coverage**: Enabled by default (`clearMocks: true`, `collectCoverage: true`)
 - **Reporters**: Default + JUnit XML output (`jest-junit`)
 
 ### Example Test Pattern
 
-```javascript
-describe('FeatureName', () => {
+```typescript
+describe("FeatureName", () => {
   beforeEach(() => {
     // setup
   });
 
-  it('should do something', (done) => {
+  it("should do something", (done) => {
     expect(result).toEqual(expected);
     done();
   });
@@ -199,45 +203,52 @@ describe('FeatureName', () => {
 
 ## Important Gotchas & Non-obvious Patterns
 
-### 1. **Main Process is NOT TypeScript**
-The Electron main process (`src/main/**/*.js`) uses CommonJS and remains JavaScript. Only the React renderer (`src/renderer/**/*.tsx`) is TypeScript. Never move main process files to `.ts`.
+### 1. **Global Objects in Main Process**
 
-### 2. **Global Objects in Main Process**
 - `global.Storage` is initialized at `src/main/index.js:38` from `src/main/api/storage.js`
 - `global.Manager` is the credential refresh manager
 - Always check these are set before using in API handlers
 
-### 3. **Storage Migration**
+### 2. **Storage Migration**
+
 The codebase migrated storage schema from object to array format (see `src/main/index.js:41-50`). New code should use the array format: `{ name, url }` objects.
 
-### 4. **Express Server Runs in Electron Main**
+### 3. **Express Server Runs in Electron Main**
+
 The Express server (`src/main/api/server.js`) runs on port 2600 inside the Electron process. Dev server proxies requests to it. Never assume it's a separate process.
 
-### 5. **Build Directory is Transient**
+### 4. **Build Directory is Transient**
+
 The `build/` directory is deleted and regenerated during packaging (see `forge.config.js:76-82`). Don't rely on it persisting between builds.
 
-### 6. **Windows Path Handling**
+### 5. **Windows Path Handling**
+
 The codebase has special handling for Windows paths (see git history). Use `path.join()` and forward slashes; the codebase handles platform differences.
 
-### 7. **Import Extensions Are Omitted**
+### 6. **Import Extensions Are Omitted**
+
 ESLint enforces no import extensions (`.js`, `.ts`, `.tsx` omitted). This applies to all imports:
-```javascript
+
+```typescript
 // ✓ Correct
-import Auth from './api/auth';
-import Component from './containers/App';
+import Auth from "./api/auth";
+import Component from "./containers/App";
 
 // ✗ Incorrect
-import Auth from './api/auth.js';
-import Component from './containers/App.tsx';
+import Auth from "./api/auth.js";
+import Component from "./containers/App.tsx";
 ```
 
-### 8. **React Router Uses MemoryRouter**
+### 7. **React Router Uses MemoryRouter**
+
 React Router is configured with `MemoryRouter` (not `BrowserRouter`) because there's no traditional URL bar in the Electron window. Routes are fully controlled by app state.
 
-### 9. **SAML Response Reuse**
+### 8. **SAML Response Reuse**
+
 Credentials are rotated by reusing the SAML response from the identity provider. Users don't re-authenticate every hour. See `src/main/api/reloader/` for rotation logic.
 
-### 10. **Environment Variables**
+### 9. **Environment Variables**
+
 - `NODE_ENV=development` enables debug mode
 - `ELECTRON_START_URL=http://localhost:3000` points to dev server
 - `SESSION_SECRET` is required for Express session in production
@@ -286,6 +297,7 @@ ESLint is strict on TypeScript files (unused variables, type safety). Fix lintin
 ## Continuous Integration
 
 GitHub Actions (`.github/workflows/node.js.yml`):
+
 - Runs on Node 18.x and 20.x
 - Steps: checkout → setup Node → install dependencies → lint → test
 - Triggered on pull requests

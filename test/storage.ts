@@ -1,6 +1,6 @@
-import Path from 'path';
-import FS from 'fs';
-import storage from '../src/main/api/storage';
+import Path from 'node:path'
+import FS from 'node:fs'
+import storage from '../src/main/api/storage'
 
 describe('Storage', () => {
   const testDir = Path.resolve(__dirname, 'data');
@@ -62,7 +62,7 @@ describe('Storage', () => {
 
     it('should return null for non-existent keys', () => {
       const store = storage(testFile);
-      expect(store.get('nonExistentKey')).toBeNull();
+      expect(store.get('nonExistentKey')).toBeUndefined();
     });
 
     it('should overwrite existing values', () => {
@@ -82,7 +82,7 @@ describe('Storage', () => {
       expect(store.get('deleteKey')).toBe('deleteValue');
 
       store.delete('deleteKey');
-      expect(store.get('deleteKey')).toBeNull();
+      expect(store.get('deleteKey')).toBeUndefined();
     });
 
     it('should persist deletion to disk', () => {
@@ -92,7 +92,7 @@ describe('Storage', () => {
 
       // Create new instance that reads from same file
       const store2 = storage(testFile);
-      expect(store2.get('persistDeleteKey')).toBeNull();
+      expect(store2.get('persistDeleteKey')).toBeUndefined();
     });
 
     it('should not error when deleting non-existent keys', () => {
@@ -106,7 +106,7 @@ describe('Storage', () => {
   describe('initialization', () => {
     it('should handle missing file gracefully', () => {
       const store = storage(testFile);
-      expect(store.get('anyKey')).toBeNull();
+      expect(store.get('anyKey')).toBeUndefined();
     });
 
     it('should handle empty file gracefully', () => {
@@ -114,7 +114,7 @@ describe('Storage', () => {
       FS.writeFileSync(testFile, '', 'utf8');
 
       const store = storage(testFile);
-      expect(store.get('anyKey')).toBeNull();
+      expect(store.get('anyKey')).toBeUndefined();
     });
 
     it('should load existing JSON file', () => {
@@ -156,7 +156,7 @@ describe('Storage', () => {
 
       store.delete('key1');
 
-      expect(store.get('key1')).toBeNull();
+      expect(store.get('key1')).toBeUndefined();
       expect(store.get('key2')).toBe('value2');
     });
   });

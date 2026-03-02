@@ -1,29 +1,31 @@
-const {
+import Electron, {
   Menu,
   app,
   autoUpdater,
-} = require('electron');
-const packageJson = require('../../package.json');
+  BrowserWindow,
+  MenuItemConstructorOptions,
+} from 'electron'
+import packageJson from '../../package.json' assert { type: 'json' }
 
-const d = new Date();
-const isMac = process.platform === 'darwin';
-const name = 'Awsaml';
-const padAndreplaceEmail = (el) => `${' '.repeat(25)}${el.replace(/<([^;]*)>/, '').trim()}`;
+const d = new Date()
+const isMac = process.platform === 'darwin'
+const name = 'Awsaml'
+const padAndreplaceEmail = (el: string) => `${' '.repeat(25)}${el.replace(/<([^;]*)>/, '').trim()}`
 const contributors = [
   ...packageJson.contributors.map(padAndreplaceEmail),
   '\nSpecial thanks to:\n',
   ...packageJson.thanks.map(padAndreplaceEmail),
   '\n',
-].join('\n');
+].join('\n')
 
 app.setAboutPanelOptions({
   applicationName: name,
   applicationVersion: packageJson.version,
   copyright: `Copyright (c) Rapid7 ${d.getFullYear()} (${packageJson.license})`,
   [isMac ? 'credits' : 'authors']: contributors,
-});
+})
 
-const template = [
+const template: MenuItemConstructorOptions[] = [
   ...(isMac ? [{
     label: name,
     submenu: [{
@@ -33,7 +35,7 @@ const template = [
       label: 'Check For Updates...',
       click: () => {
         if (app.isPackaged) {
-          autoUpdater.checkForUpdates();
+          autoUpdater.checkForUpdates()
         }
       },
     }, {
@@ -60,11 +62,11 @@ const template = [
     }, {
       accelerator: 'Command+Q',
       click() {
-        app.quit();
+        app.quit()
       },
       label: 'Quit',
     }],
-  }] : []),
+  }] as MenuItemConstructorOptions[] : []),
   {
     label: 'Edit',
     submenu: [{
@@ -92,44 +94,44 @@ const template = [
     }, {
       accelerator: 'CmdOrCtrl+A',
       label: 'Select All',
-      role: 'selectall',
+      role: 'selectAll',
     }],
   }, {
     label: 'View',
     submenu: [{
       accelerator: 'CmdOrCtrl+R',
-      click(item, focusedWindow) {
-        if (focusedWindow) {
-          focusedWindow.reload();
+      click(_item: Electron.MenuItem, focusedWindow: Electron.BaseWindow | undefined, _: Electron.KeyboardEvent) {
+        if (focusedWindow instanceof Electron.BrowserWindow) {
+          focusedWindow.reload()
         }
       },
       label: 'Reload',
     }, {
       accelerator: 'CmdOrCtrl+Shift+R',
-      click(item, focusedWindow) {
+      click(_item: Electron.MenuItem, focusedWindow: Electron.BaseWindow | undefined, _: Electron.KeyboardEvent) {
         if (focusedWindow) {
-          focusedWindow.emit('reset');
+          focusedWindow.emit('reset')
         }
       },
       label: 'Reset',
     }, {
       accelerator: (function a() {
-        return (process.platform === 'darwin') ? 'Ctrl+Command+F' : 'F11';
+        return (process.platform === 'darwin') ? 'Ctrl+Command+F' : 'F11'
       }()),
-      click(item, focusedWindow) {
+      click(_item: Electron.MenuItem, focusedWindow: Electron.BaseWindow | undefined, _: Electron.KeyboardEvent) {
         if (focusedWindow) {
-          focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+          focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
         }
       },
       label: 'Toggle Full Screen',
     },
     {
       accelerator: (function a() {
-        return (process.platform === 'darwin') ? 'Alt+Command+I' : 'Ctrl+Shift+I';
+        return (process.platform === 'darwin') ? 'Alt+Command+I' : 'Ctrl+Shift+I'
       }()),
-      click(item, focusedWindow) {
-        if (focusedWindow) {
-          focusedWindow.toggleDevTools();
+      click(_item: Electron.MenuItem, focusedWindow: Electron.BaseWindow | undefined, _: Electron.KeyboardEvent) {
+        if (focusedWindow instanceof BrowserWindow) {
+          focusedWindow.webContents.toggleDevTools()
         }
       },
       label: 'Toggle Developer Tools',
@@ -151,10 +153,10 @@ const template = [
     }, {
       label: 'Bring All to Front',
       role: 'front',
-    }] : [])],
+    }] as MenuItemConstructorOptions[] : [])],
   },
-];
+]
 
-const menu = Menu.buildFromTemplate(template);
+const menu = Menu.buildFromTemplate(template)
 
-Menu.setApplicationMenu(menu);
+Menu.setApplicationMenu(menu)

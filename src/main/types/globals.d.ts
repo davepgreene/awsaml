@@ -1,9 +1,22 @@
-import type { Storage as StorageClass } from './api/storage';
-import type ReloadManager from './api/reloader/manager';
+import Reloader from './../api/reloader/reloader'
 
-declare global {
-  var Storage: StorageClass;
-  var Manager: ReloadManager;
+interface StorageInstance {
+  get<T>(key: string): T | undefined
+  set(key: string, value: unknown): void
+  delete(key: string): void
 }
 
-export {};
+interface ReloadManager {
+  get(name: string): Reloader | undefined
+  add(reloader: Reloader): void
+  removeByName(name: string): void
+  removeByReloader(reloader: Reloader): void
+  reloaders: Record<string, Reloader>
+}
+
+declare global {
+  var Store: StorageInstance
+  var Manager: ReloadManager
+}
+
+export {}
